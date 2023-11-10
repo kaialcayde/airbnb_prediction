@@ -58,3 +58,32 @@ preds = lin_reg.predict(test)
 mse = mean_squared_error(target_test, preds)
 rmse = np.sqrt(mse)
 rmse
+
+
+
+import tensorflow as tf
+from tensorflow import keras
+
+# change all train, target, etc to numpy or an array so TF can use
+# check: I think these might be sparse as they are csr_matrix type, make dense?
+# use .to_numpy() or .toarray()
+train = train.toarray()
+test = test.toarray()
+target = target.toarray()
+target_test = target_test.toarray()
+
+
+# use same train and test split with linear regression
+# try using relu to see if there is non-linear relations in the data
+model = keras.Sequential([
+    keras.layers.Dense(64, activation='relu', input_shape = [train.shape[1]]),
+    keras.layers.Dense(32, activation='relu'),
+    keras.layers.Dense(1)
+])
+
+
+model.compile(optimizer='adam', loss='mean_squared_error')
+model.fit(train, target, epochs=100, batch_size=32)
+test_loss = model.evaluate(test, target_test)
+rsme = np.sqrt(test_loss)
+rsme
